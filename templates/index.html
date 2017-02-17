@@ -10,10 +10,6 @@
         <div class="panel-heading">
           <h3 class="panel-title">
             Daily Special
-            (owner will be able to edit daily special here)
-            {% if request.user.profile.is_owner %}
-            (owner will be able to edit daily special here)
-            {% endif %}
 
             </h3>
         </div>
@@ -21,10 +17,14 @@
 
 
         <div class="panel-body">
-          (owner will be able to edit daily special here)
+      <ol>
+        {% for special in object_list %}
+          <li>{{ special }}</li>
           {% if request.user.profile.is_owner %}
-          (owner will be able to edit daily special here)
+            <a href="{% url 'daily_special_update_view' special.id %}">Edit</a>
           {% endif %}
+        {% endfor %}
+      </ol>
 
         </div>
 

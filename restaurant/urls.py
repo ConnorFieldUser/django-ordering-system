@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from ordering_system.views import IndexView
+from ordering_system.views import DailySpecialListView, DailySpecialUpdateView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('^', include('django.contrib.auth.urls')),
-    url(r'^$', IndexView.as_view(), name="index_view"),
-
+    url(r'^$', DailySpecialListView.as_view(), name="daily_special_list_view"),
+    url(r'^daily_special/(?P<pk>\d+)/update/$', DailySpecialUpdateView.as_view(), name="daily_special_update_view"),
 ]

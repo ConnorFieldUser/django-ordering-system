@@ -89,6 +89,12 @@ class OrderItem(models.Model):
     menuitem = models.ForeignKey(MenuItem)
     quantity = models.PositiveIntegerField(default=1)
 
+    def __str__(self):
+        return "{}: {}".format(self.order, self.menuitem)
 
-def __str__(self):
-    return "{}: {}".format(self.order, self.menuitem)
+
+class DailySpecial(models.Model):
+    name = models.ForeignKey(MenuItem)
+
+    def __str__(self):
+        return "{}".format(self.name)
