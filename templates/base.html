@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MightyRestaraunt</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" media="screen" title="no title">
+    <style media="screen">
+      body {
+        background-color:#d37032;
+        font-family:sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-inverse">
+        <div class="container">
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'index_view' %}">Home</a></li>
+            {% if request.user.is_authenticated %}
+          <li> <a href="#">user is authenticated</a></li>
+              {% if request.user.profile.is_owner %}
+              <li><a href="#">user is owner</a></li>
+              {% endif %}
+              {% if request.user.profile.is_server %}
+              <li><a href="#">user is server</a></li>
+              {% endif %}
+              <li><a href="{% url 'logout' %}?next={% url 'index_view' %}">Log out</a></li>
+            {% else %}
+            "create user"
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+
+<h1>The Mighty Restaurant</h1>
+{% if request.user.is_authenticated %}
+<h3>{{ request.user }}:
+{% if request.user.profile.access_level == 'o' %}
+  Owner
+{% elif request.user.profile.access_level == 's' %}
+  Server
+{% elif request.user.profile.access_level == 'c' %}
+  Chef
+{% endif %}
+</h3>
+
+{% endif %}
+{% block content %}
+{% endblock %}
+
+  </div>
+
+  </body>
+</html>

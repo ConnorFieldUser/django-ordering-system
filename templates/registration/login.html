@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-4">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">LOGIN</h3>
+    </div>
+    <div class="panel-body">
+      <form class="" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+      <input type="submit" name="" value="Login">
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

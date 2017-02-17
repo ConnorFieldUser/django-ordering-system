@@ -1,10 +1,54 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Title</title>
-  </head>
-  <body>
-    Index
-  </body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            Daily Special
+            (owner will be able to edit daily special here)
+            {% if request.user.profile.is_owner %}
+            (owner will be able to edit daily special here)
+            {% endif %}
+
+            </h3>
+        </div>
+
+
+
+        <div class="panel-body">
+          (owner will be able to edit daily special here)
+          {% if request.user.profile.is_owner %}
+          (owner will be able to edit daily special here)
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+
+{% if not request.user.is_authenticated %}
+    <div class="col-md-4">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">LOGIN</h3>
+        </div>
+        <div class="panel-body">
+          <form class="" action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            {{ login_form.as_p }}
+          <input type="submit" name="" value="Login">
+          </form>
+        </div>
+      </div>
+    </div>
+{% endif %}
+
+  </div>
+
+{% endblock %}
