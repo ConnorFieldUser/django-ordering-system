@@ -95,6 +95,7 @@ class OrderItem(models.Model):
 
 class DailySpecial(models.Model):
     name = models.ForeignKey(MenuItem)
+    price = models.FloatField()
 
     def __str__(self):
         return "{}".format(self.name)
