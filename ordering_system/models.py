@@ -42,7 +42,8 @@ def create_user_profile(**kwargs):
 class MenuItem(models.Model):
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=90)
-    price = models.IntegerField
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
     ref_id = models.IntegerField
 
     def __str__(self):
@@ -95,7 +96,7 @@ class OrderItem(models.Model):
 
 class DailySpecial(models.Model):
     name = models.ForeignKey(MenuItem)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return "{}".format(self.name)
