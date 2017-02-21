@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if request.user.profile.is_owner %}
+  <h3><a href="{% url 'menu_item_create_view' %}">Add item to menu</a></h3>
+{% endif %}
+
+{% for object in object_list %}
+<hr>
+  <p>
+    {{ object.name }} ${{ object.price }}
+    {% if request.user.profile.is_owner %}
+      <a href="{% url 'menu_item_delete_view' object.id %}">Delete</a>
+      <a href="{% url 'menu_item_update_view' object.id %}">/Edit</a>
+    {% endif %}
+  </p>
+
+    {% endfor %}
+    <hr>
+{% endblock %}

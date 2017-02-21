@@ -10,6 +10,9 @@
         background-color:#d37032;
         font-family:sans-serif;
       }
+      a {
+        color:#0039c1
+      }
     </style>
   </head>
   <body>
@@ -18,8 +21,9 @@
         <div class="container">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'daily_special_list_view' %}">Home</a></li>
+            <li><a href="{% url 'menu_item_list_view' %}">Menu</a></li>
             {% if request.user.is_authenticated %}
-          <li> <a href="#">user is authenticated</a></li>
+          <li> <a href="{% url 'profile_update_view' %}">Change User Type</a></li>
               {% if request.user.profile.is_owner %}
               <li><a href="#">user is owner</a></li>
               {% endif %}
@@ -28,7 +32,8 @@
               {% endif %}
               <li><a href="{% url 'logout' %}?next={% url 'daily_special_list_view' %}">Log out</a></li>
             {% else %}
-            "create user"
+            <li><a href="{% url 'user_create_view' %}">Create User</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
           </ul>
         </div>
@@ -44,6 +49,11 @@
 {% elif request.user.profile.access_level == 'c' %}
   Chef
 {% endif %}
+</h3>
+
+{% else %}
+<h3>
+Not Signed in
 </h3>
 
 {% endif %}

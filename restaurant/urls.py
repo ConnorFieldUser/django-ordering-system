@@ -16,12 +16,18 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from ordering_system.views import DailySpecialListView, DailySpecialUpdateView, ProfileUpdateView
+from ordering_system.views import DailySpecialListView, DailySpecialUpdateView, ProfileUpdateView, UserCreateView, MenuItemListView, MenuItemCreateView, MenuItemDeleteView, MenuItemUpdateView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('^', include('django.contrib.auth.urls')),
+    url(r'^$', DailySpecialListView.as_view(), name="daily_special_list_view"),
+    url(r'^create_user/$', UserCreateView.as_view(), name="user_create_view"),
     url(r'^profile/update/$', ProfileUpdateView.as_view(), name="profile_update_view"),
     url(r'^$', DailySpecialListView.as_view(), name="daily_special_list_view"),
     url(r'^daily_special/(?P<pk>\d+)/update/$', DailySpecialUpdateView.as_view(), name="daily_special_update_view"),
+    url(r'^menu_items/$', MenuItemListView.as_view(), name="menu_item_list_view"),
+    url(r'^menu_item/create/$', MenuItemCreateView.as_view(), name="menu_item_create_view"),
+    url(r'^menu_item/(?P<pk>\d+)/delete/$', MenuItemDeleteView.as_view(), name="menu_item_delete_view"),
+    url(r'^menu_item/(?P<pk>\d+)/update/$', MenuItemUpdateView.as_view(), name='menu_item_update_view'),
 ]
