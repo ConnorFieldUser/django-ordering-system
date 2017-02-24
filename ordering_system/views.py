@@ -6,7 +6,7 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 
 from django.contrib.auth.forms import AuthenticationForm
 
-from ordering_system.models import DailySpecial, Profile, MenuItem
+from ordering_system.models import DailySpecial, Profile, MenuItem, Order, OrderItem
 from django.contrib.auth.models import User
 
 from django.contrib.auth.forms import UserCreationForm
@@ -17,8 +17,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from ordering_system.mixins import OwnerAccessMixin
 
+from extra_views import InlineFormSet, UpdateWithInlinesView
+
 
 # Create your views here.
+
+
+class OrderItemInline(InlineFormSet):
+    model = OrderItem
+    extra = 5
+    fields = ['quantity', 'menuitem']
 
 
 class UserCreateView(CreateView):
@@ -77,3 +85,69 @@ class MenuItemUpdateView(OwnerAccessMixin, UpdateView):
     model = MenuItem
     success_url = reverse_lazy("menu_item_list_view")
     fields = ('name', 'description', 'price')
+
+
+class OrderCreateView(CreateView):
+    # (CreateWithInlinesView)
+    model = Order
+    # inlines = [OrderItemInline]
+    success_url = "/"
+    fields = ('table_number',)
+    #
+    # def form_valid(self, form):
+    #     instance = form.save(commit=False)
+    #     instance.user = self.request.user
+    #     return super().form_valid(form)
+
+    # def forms_valid(self, form, inlines):
+    #     """
+    #     If the form and formsets are valid, save the associated models.
+    #     """
+    #     order = form.save(commit=False)
+    #     order.server = self.request.user
+    #     self.object = form.save()
+    #     for formset in inlines:
+    #         formset.save()
+    #     return super().forms_valid(form, inlines)
+
+
+class OrderListView(LoginRequiredMixin, ListView):
+    model = Order
+    login_url = '/login/'
+
+    def get_queryset(self):
+        if self.request.user.profile.is_owner:
+            return Order.objects.all()
+        else:
+            return Order.objects.filter(paid=False)
+
+
+class OrderUpdateView(LoginRequiredMixin, UpdateView):
+    model = Order
+    success_url = reverse_lazy('order_list_view')
+    fields = ('menuitems', 'paid', 'table_number')
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class OrderDetailView(LoginRequiredMixin, UpdateWithInlinesView):
+    model = Order
+    inlines = [OrderItemInline]
+    # fields = ['customer_name', 'note', 'is_complete', 'is_paid']
+    fields = ['table_number', 'paid']
+    template_name = 'ordering_system/order_detail.html'
+    success_url = reverse_lazy("/")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        context['object'] = Order.objects.get(id=pk)
+        orderitem_obj = OrderItem.objects.filter(menuitem=pk)
+        total = 0
+        for item in orderitem_obj:
+            total += (item.quantity * item.menuitem.price)
+        context['total'] = total
+        return context

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+    <h1>Order Detail</h1>
+    <h1><b>Order Total:</b> ${{ total }}</h1>
+
+    <div class="row">
+        <form id="OrderForm" class="" action="" method="post">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <input class="signUpBtn btn btn-primary" type="submit" value="Submit Order">
+            </div>
+        <div class="small-7 columns">
+            <h4>Order Line Items:</h4>
+            <table>
+                {% for form in inlines %}
+                    <tr>{{ form.as_table }}</tr>
+                {% endfor %}
+            </table>
+        </div>
+    </form>
+
+    </div>
+{% endblock %}

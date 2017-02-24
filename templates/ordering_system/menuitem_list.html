@@ -8,7 +8,8 @@
 {% for object in object_list %}
 <hr>
   <p>
-    {{ object.name }} ${{ object.price }}
+    <h4>{{ object.name }} ${{ object.price }}</h4>
+    {{ object.description }}
     {% if request.user.profile.is_owner %}
       <a href="{% url 'menu_item_delete_view' object.id %}">Delete</a>
       <a href="{% url 'menu_item_update_view' object.id %}">/Edit</a>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  {% for order in object_list %}
+  <div class="well">
+      <p>
+        {{ order }}; Table {{ order.table_number }}
+      </p>
+      {% for item in order.menuitems.all %}
+        <p>
+          {{ item }}   ${{ item.price }}
+        </p>
+      {% endfor %}
+      <hr>
+      Total: ${{ order.total }}
+        {% if order.is_paid %}
+          <h4 style="color:green">paid</p>
+        {% else %}
+          <h4 style="color:red">unpaid</p>
+        {% endif %}
+      </p>
+</div>
+  {% endfor %}
+
+{% endblock %}
