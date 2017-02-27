@@ -139,7 +139,7 @@ class OrderDetailView(LoginRequiredMixin, UpdateWithInlinesView):
     # fields = ['customer_name', 'note', 'is_complete', 'is_paid']
     fields = ['table_number', 'paid']
     template_name = 'ordering_system/order_detail.html'
-    success_url = reverse_lazy("/")
+    success_url = reverse_lazy("daily_special_list_view")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
