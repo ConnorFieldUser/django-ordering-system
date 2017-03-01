@@ -17,8 +17,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from ordering_system.mixins import OwnerAccessMixin
 
-from extra_views import InlineFormSet, UpdateWithInlinesView
+from extra_views import InlineFormSet, UpdateWithInlinesView, CreateWithInlinesView
 
+from django.shortcuts import get_object_or_404
+
+from django.shortcuts import render_to_response
 
 # Create your views here.
 
@@ -87,13 +90,46 @@ class MenuItemUpdateView(OwnerAccessMixin, UpdateView):
     fields = ('name', 'description', 'price')
 
 
-class OrderCreateView(CreateView):
-    # (CreateWithInlinesView)
+class OrderListView(LoginRequiredMixin, ListView):
     model = Order
-    # inlines = [OrderItemInline]
+    login_url = '/login/'
+
+    def get_queryset(self):
+        if self.request.user.profile.is_owner:
+            return Order.objects.all()
+        else:
+            return Order.objects.filter(paid=False)
+
+    # def group_details(request, order_id):
+    #     order = get_object_or_404(Order, pk=order_id)
+    #     return render_to_response('group_details.html', {'order': order})
+
+
+class OrderDetailView(LoginRequiredMixin, UpdateWithInlinesView):
+    model = Order
+    inlines = [OrderItemInline]
+    fields = ['table_number', 'paid']
+    template_name = 'ordering_system/order_detail.html'
+    success_url = reverse_lazy("daily_special_list_view")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        context['object'] = Order.objects.get(id=pk)
+        orderitem_obj = OrderItem.objects.filter(order=pk)
+        total = 0
+        for item in orderitem_obj:
+            total += (item.quantity * item.menuitem.price)
+        context['total'] = total
+        return context
+
+
+class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
+    model = Order
+    inlines = [OrderItemInline]
     success_url = "/"
-    fields = ('table_number',)
-    #
+    fields = ('table_number', 'paid')
+
     # def form_valid(self, form):
     #     instance = form.save(commit=False)
     #     instance.user = self.request.user
@@ -109,45 +145,3 @@ class OrderCreateView(CreateView):
     #     for formset in inlines:
     #         formset.save()
     #     return super().forms_valid(form, inlines)
-
-
-class OrderListView(LoginRequiredMixin, ListView):
-    model = Order
-    login_url = '/login/'
-
-    def get_queryset(self):
-        if self.request.user.profile.is_owner:
-            return Order.objects.all()
-        else:
-            return Order.objects.filter(paid=False)
-
-
-class OrderUpdateView(LoginRequiredMixin, UpdateView):
-    model = Order
-    success_url = reverse_lazy('order_list_view')
-    fields = ('menuitems', 'paid', 'table_number')
-
-    def form_valid(self, form):
-        instance = form.save(commit=False)
-        instance.user = self.request.user
-        return super().form_valid(form)
-
-
-class OrderDetailView(LoginRequiredMixin, UpdateWithInlinesView):
-    model = Order
-    inlines = [OrderItemInline]
-    # fields = ['customer_name', 'note', 'is_complete', 'is_paid']
-    fields = ['table_number', 'paid']
-    template_name = 'ordering_system/order_detail.html'
-    success_url = reverse_lazy("daily_special_list_view")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        pk = self.kwargs.get('pk')
-        context['object'] = Order.objects.get(id=pk)
-        orderitem_obj = OrderItem.objects.filter(menuitem=pk)
-        total = 0
-        for item in orderitem_obj:
-            total += (item.quantity * item.menuitem.price)
-        context['total'] = total
-        return context

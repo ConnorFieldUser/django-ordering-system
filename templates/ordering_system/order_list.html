@@ -3,15 +3,17 @@
 
   {% for order in object_list %}
   <div class="well">
-      <p>
-        {{ order }}; Table {{ order.table_number }}
+    <p>
+      {{ order }}; Table {{ order.table_number }}
+    </p>
+    <hr>
+    {% for item in order.orderitem_set.all %}
+      <p>{{ item.quantity }} {{ item }}
+        ${{ item.total }}
       </p>
-      {% for item in order.menuitems.all %}
-        <p>
-          {{ item }}   ${{ item.price }}
-        </p>
-      {% endfor %}
-      <hr>
+  {% endfor %}
+
+<hr>
       Total: ${{ order.total }}
         {% if order.is_paid %}
           <h4 style="color:green">paid</p>

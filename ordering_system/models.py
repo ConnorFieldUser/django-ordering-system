@@ -88,7 +88,7 @@ class Order(models.Model):
     def total(self):
         total = 00
         for i in self.orderitem_set.all():
-            total += i.menuitem.price
+            total += i.total
         return total
 
 
@@ -98,7 +98,12 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return "{}: {}".format(self.order, self.menuitem)
+        return "{}".format(self.menuitem)
+
+    @property
+    def total(self):
+        total = self.menuitem.price * self.quantity
+        return total
 
 
 class DailySpecial(models.Model):

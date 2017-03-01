@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from ordering_system.views import DailySpecialListView, DailySpecialUpdateView, ProfileUpdateView, UserCreateView, MenuItemListView, MenuItemCreateView, MenuItemDeleteView, MenuItemUpdateView, OrderCreateView, OrderListView, OrderUpdateView, OrderDetailView
+from ordering_system.views import DailySpecialListView, DailySpecialUpdateView, ProfileUpdateView, UserCreateView, MenuItemListView, MenuItemCreateView, MenuItemDeleteView, MenuItemUpdateView, OrderCreateView, OrderListView, OrderDetailView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -33,5 +33,4 @@ urlpatterns = [
     url(r'^order/create/$', OrderCreateView.as_view(), name="order_create_view"),
     url(r'^orders/$', OrderListView.as_view(), name="order_list_view"),
     url(r'^order/(?P<pk>\d+)/$', OrderDetailView.as_view(), name="order_detail_view"),
-    url(r'^order/(?P<pk>\d+)/update/$', OrderUpdateView.as_view(), name="order_update_view"),
 ]

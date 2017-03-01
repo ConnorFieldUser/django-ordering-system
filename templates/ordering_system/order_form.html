@@ -1,50 +1,34 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 
-{% block body %}
+{% block content %}
 <h1>Create Order</h1>
 <br>
+<h1><b>Order Total:</b> ${{ total }}</h1>
 
-<div class="row">
-    <form class="" action="" method="post">
-        {% csrf_token %}
-        {{ formset.management_form }}
-    <div class="medium-5 columns">
-        <div class="row">
-            <div class="small-3 columns">
-                <p>Complete?</p>
-                <div class="switch large">
-                    {{ form.is_complete|add_class:"switch-input" }}
-                    <label class="switch-paddle" for="id_is_complete">
-                        <span class="show-for-sr">Complete?</span>
-                        <span class="switch-active" aria-hidden="true">Yes</span>
-                        <span class="switch-inactive" aria-hidden="true">No</span>
-                    </label>
-                </div>
-            </div>
-            <div class="small-3 columns">
-                <p>Paid?</p>
-                <div class="switch large">
-                    {{ form.is_paid|add_class:"switch-input" }}
-                    <label class="switch-paddle" for="id_is_paid">
-                        <span class="show-for-sr">Paid?</span>
-                        <span class="switch-active" aria-hidden="true">Yes</span>
-                        <span class="switch-inactive" aria-hidden="true">No</span>
-                    </label>
-                </div>
-            </div>
-            <input class="expanded button" type="submit" name="submit_order" value="Submit Order">
-        </div>
-    </div>
-    <div class="medium-7 columns">
-        <h4>Order Line Items:</h4>
-        <table>
-            {% for form in inlines %}
-                <tr>{{ form.as_table }}</tr>
-            {% endfor %}
-        </table>
-    </div>
-</form>
-</div>
+<form method="POST" action="">
+    {{ form }}
+
+    {% for formset in inlines %}
+         <hr />
+         <h3>Deliveries</h3>
+         {{ formset.management_form }}
+         {% for subform in formset %}
+             <div class="subform">
+                 {{ subform }}
+             </div>
+         {% endfor %}
+     {% endfor %}
+
+    <div>
+         <hr />
+         {% csrf_token %}
+         <input class="signUpBtn btn btn-primary" type="submit" value="Submit Order">
+     </div>
+
+
+  </form>
+
+
 
 {% endblock %}
