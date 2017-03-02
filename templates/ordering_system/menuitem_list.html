@@ -2,20 +2,21 @@
 {% block content %}
 
 {% if request.user.profile.is_owner %}
-  <h3><a href="{% url 'menu_item_create_view' %}">Add item to menu</a></h3>
+  <p>
+  <a href="{% url 'menu_item_create_view' %}" class="btn btn-primary" role="button">Add item to menu</a>
+  </p>
 {% endif %}
 
 {% for object in object_list %}
-<hr>
-  <p>
-    <h4>{{ object.name }} ${{ object.price }}</h4>
-    {{ object.description }}
-    {% if request.user.profile.is_owner %}
-      <a href="{% url 'menu_item_delete_view' object.id %}">Delete</a>
-      <a href="{% url 'menu_item_update_view' object.id %}">/Edit</a>
-    {% endif %}
-  </p>
-
-    {% endfor %}
-    <hr>
+  <div class="well">
+    <p>
+      <h4>{{ object.name }} ${{ object.price }}</h4>
+      {{ object.description }}
+      {% if request.user.profile.is_owner %}
+        <a href="{% url 'menu_item_delete_view' object.id %}">Delete</a>
+        <a href="{% url 'menu_item_update_view' object.id %}">/Edit</a>
+      {% endif %}
+    </p>
+  </div>
+{% endfor %}
 {% endblock %}

@@ -3,6 +3,15 @@
 
   {% for order in object_list %}
   <div class="well">
+
+    <h4 style="text-align:right; float:right; color:blue">
+      {% if request.user.profile.is_owner or request.user.profile.is_server %}
+        <a href="{% url 'order_detail_view' order.id %}">Mark as served/paid</a>
+      {% elif request.user.profile.is_chef %}
+        <a href="{% url 'order_detail_view' order.id %}">Mark as prepared</a>
+      {% endif %}
+    </h4>
+
     <p>
       {{ order }}; Table {{ order.table_number }}
     </p>

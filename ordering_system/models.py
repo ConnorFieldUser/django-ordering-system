@@ -96,6 +96,8 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order)
     menuitem = models.ForeignKey(MenuItem)
     quantity = models.PositiveIntegerField(default=1)
+    prepared = models.BooleanField(default=False)
+    served = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}".format(self.menuitem)

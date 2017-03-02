@@ -15,7 +15,7 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from ordering_system.mixins import OwnerAccessMixin
+from ordering_system.mixins import OwnerAccessMixin, NotChefMixin
 
 from extra_views import InlineFormSet, UpdateWithInlinesView, CreateWithInlinesView
 
@@ -100,17 +100,13 @@ class OrderListView(LoginRequiredMixin, ListView):
         else:
             return Order.objects.filter(paid=False)
 
-    # def group_details(request, order_id):
-    #     order = get_object_or_404(Order, pk=order_id)
-    #     return render_to_response('group_details.html', {'order': order})
 
-
-class OrderDetailView(LoginRequiredMixin, UpdateWithInlinesView):
+class OrderDetailView(LoginRequiredMixin, NotChefMixin, UpdateWithInlinesView):
     model = Order
     inlines = [OrderItemInline]
     fields = ['table_number', 'paid']
     template_name = 'ordering_system/order_detail.html'
-    success_url = reverse_lazy("daily_special_list_view")
+    success_url = reverse_lazy("order_list_view")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -130,18 +126,13 @@ class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
     success_url = "/"
     fields = ('table_number', 'paid')
 
-    # def form_valid(self, form):
-    #     instance = form.save(commit=False)
-    #     instance.user = self.request.user
-    #     return super().form_valid(form)
 
-    # def forms_valid(self, form, inlines):
-    #     """
-    #     If the form and formsets are valid, save the associated models.
-    #     """
-    #     order = form.save(commit=False)
-    #     order.server = self.request.user
-    #     self.object = form.save()
-    #     for formset in inlines:
-    #         formset.save()
-    #     return super().forms_valid(form, inlines)
+class OrderItemListView(LoginRequiredMixin, ListView):
+    model = OrderItem
+    login_url = '/login/'
+
+    def get_queryset(self):
+        if self.request.user.profile.is_owner:
+            return OrderItem.objects.all()
+        else:
+            return OrderItem.objects.filter(ready=False)
