@@ -17,14 +17,14 @@
 
 
         <div class="panel-body">
-      <ol>
+      <ul>
         {% for special in object_list %}
           <li>{{ special }}: ${{ special.price }} </li>
           {% if request.user.profile.is_owner %}
             <a href="{% url 'daily_special_update_view' special.id %}">Edit</a>
           {% endif %}
         {% endfor %}
-      </ol>
+      </ul>
 
         </div>
 

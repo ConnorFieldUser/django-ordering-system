@@ -15,7 +15,7 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from ordering_system.mixins import OwnerAccessMixin, NotChefMixin
+from ordering_system.mixins import OwnerAccessMixin, NotChefMixin, NotServerMixin
 
 from extra_views import InlineFormSet, UpdateWithInlinesView, CreateWithInlinesView
 
@@ -127,12 +127,23 @@ class OrderCreateView(LoginRequiredMixin, CreateWithInlinesView):
     fields = ('table_number', 'paid')
 
 
-class OrderItemListView(LoginRequiredMixin, ListView):
+class OrderItemListView(LoginRequiredMixin, NotServerMixin, ListView):
     model = OrderItem
-    login_url = '/login/'
+    login_url = '/'
 
     def get_queryset(self):
         if self.request.user.profile.is_owner:
             return OrderItem.objects.all()
         else:
-            return OrderItem.objects.filter(ready=False)
+            return OrderItem.objects.filter(prepared=False)
+
+
+class OrderItemUpdateView(LoginRequiredMixin, UpdateView):
+    model = OrderItem
+    success_url = reverse_lazy("order_item_list_view")
+    fields = ("prepared",)
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.prepared = True
+        return super().form_valid(form)

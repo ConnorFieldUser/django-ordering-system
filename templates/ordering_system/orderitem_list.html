@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  {% for orderitem in object_list %}
+    <div class="well">
+      <h3 style="text-align:right; float:right; color:blue">
+        <a href="{% url 'order_item_update_view' orderitem.id%}" class="btn btn-primary btn-lg" role="button">Mark as prepared</a>
+
+      </p>
+      <h3>{{ orderitem.quantity }} {{ orderitem }}</h3>
+
+      {% if orderitem.prepared %}
+        <h4 style="color:green">
+          Prepared
+        </h4>
+      {% elif orderitem.prepared == False %}
+        <span style="color:red">
+          Not ready
+        </span>
+      {% endif %}
+
+
+  </div>
+
+  {% endfor %}
+
+{% endblock %}

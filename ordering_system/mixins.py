@@ -16,3 +16,11 @@ class NotChefMixin(UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.profile.access_level != "c"
+
+
+class NotServerMixin(UserPassesTestMixin):
+    login_url = reverse_lazy('daily_special_list_view')
+    redirect_field_name = "None"
+
+    def test_func(self):
+        return self.request.user.profile.access_level != "s"

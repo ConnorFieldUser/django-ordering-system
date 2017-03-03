@@ -21,20 +21,27 @@
         <div class="container">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'daily_special_list_view' %}">Home</a></li>
-            <li><a href="{% url 'order_list_view' %}">Orders</a></li>
-            <li><a href="{% url 'menu_item_list_view' %}">Menu</a></li>
+            {% if request.user.profile.is_chef %}
+              <li><a href="{% url 'order_item_list_view' %}">Items</a></li>
+            {% elif request.user.profile.is_server %}
+              <li><a href="{% url 'order_list_view' %}">Orders</a></li>
+              <li><a href="{% url 'menu_item_list_view' %}">Menu</a></li>
+              {% elif request.user.profile.is_owner %}
+              <li><a href="{% url 'menu_item_list_view' %}">Menu</a></li>
+              <li><a href="{% url 'order_list_view' %}">Orders</a></li>
+              <li><a href="{% url 'order_item_list_view' %}">Items</a></li>
+            {% endif %}
             {% if request.user.is_authenticated %}
-          <li> <a href="{% url 'profile_update_view' %}">Change User Type</a></li>
+              <li> <a href="{% url 'profile_update_view' %}">Change User Type</a></li>
               {% if request.user.profile.is_owner %}
-              <li><a href="#">user is owner</a></li>
-              {% endif %}
-              {% if request.user.profile.is_server %}
-              <li><a href="#">user is server</a></li>
+                <li><a href="#">user is owner</a></li>
+              {% elif request.user.profile.is_server %}
+                <li><a href="#">user is server</a></li>
               {% endif %}
               <li><a href="{% url 'logout' %}?next={% url 'daily_special_list_view' %}">Log out</a></li>
             {% else %}
-            <li><a href="{% url 'user_create_view' %}">Create User</a></li>
-            <li><a href="{% url 'login' %}">Login</a></li>
+              <li><a href="{% url 'user_create_view' %}">Create User</a></li>
+              <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
           </ul>
         </div>
@@ -42,18 +49,18 @@
 
 <h1>Restaurant Order Tracker </h1>
 {% if request.user.is_authenticated %}
-<h3>{{ request.user }}:
-{% if request.user.profile.access_level == 'o' %}
-  Owner
-{% elif request.user.profile.access_level == 's' %}
-  Server
-{% elif request.user.profile.access_level == 'c' %}
-  Chef
-{% endif %}
-</h3>
-
-{% else %}
-<h3>Please sign in</h3>
+  <h3>
+    {{ request.user }}:
+    {% if request.user.profile.access_level == 'o' %}
+      Owner
+    {% elif request.user.profile.access_level == 's' %}
+      Server
+    {% elif request.user.profile.access_level == 'c' %}
+      Chef
+    {% endif %}
+  </h3>
+    {% else %}
+      <h3>Please sign in</h3>
 
 {% endif %}
 {% block content %}
