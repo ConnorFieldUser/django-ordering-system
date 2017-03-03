@@ -25,7 +25,7 @@ SECRET_KEY = 'i308p7#ld*icv_wxp-*pxi__ej5v8&jj%g$g=8f_779h!#u*d&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['restaurant-order-tracker.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -75,6 +75,8 @@ WSGI_APPLICATION = 'restaurant.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -82,6 +84,10 @@ DATABASES = {
     }
 }
 
+heroku_database = dj_database_url.config()
+
+if heroku_database:
+    DATABASES['default'] = heroku_database
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
